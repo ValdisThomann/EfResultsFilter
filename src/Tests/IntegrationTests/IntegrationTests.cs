@@ -56,6 +56,17 @@ public class IntegrationTests :
         }
     }
 
+    //[Fact]
+    //public async Task Async2()
+    //{
+    //    using (var database = await BuildContext())
+    //    using (var filtered = database.Context.ParentEntities.Filtered(BuildFilters()))
+    //    {
+    //        var result = filtered.ToListAsync();
+    //        ObjectApprover.Verify(result);
+    //    }
+    //}
+
     [Fact]
     public async Task<SqlDatabase<EfFilterDbContext>> BuildContext()
     {

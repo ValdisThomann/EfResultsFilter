@@ -2,7 +2,8 @@
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using Microsoft.EntityFrameworkCore.Storage;
 
-class CustomQueryContextFactory : RelationalQueryContextFactory
+class CustomQueryContextFactory :
+    RelationalQueryContextFactory
 {
     protected override IQueryBuffer CreateQueryBuffer()
     {
