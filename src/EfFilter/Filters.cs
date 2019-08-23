@@ -7,7 +7,7 @@ namespace EfFilter
 {
     #region GlobalFiltersSignature
 
-    public class GlobalFilters
+    public class Filters
     {
         public delegate bool Filter<in T>(T input);
 
@@ -51,50 +51,7 @@ namespace EfFilter
 
         Dictionary<Type, Func<object, Task<bool>>> funcs = new Dictionary<Type, Func<object, Task<bool>>>();
 
-        internal async Task<IEnumerable<T>> ApplyFilter<T>(IEnumerable<T> result)
-        {
-            if (funcs.Count == 0)
-            {
-                return result;
-            }
-
-            var filters = FindFilters<T>().ToList();
-            if (filters.Count == 0)
-            {
-                return result;
-            }
-
-            var list = new List<T>();
-            foreach (var item in result)
-            {
-                if (await ShouldInclude(item, filters))
-                {
-                    list.Add(item);
-                }
-            }
-
-            return list;
-        }
-
-        static async Task<bool> ShouldInclude<T>(T item, List<Func<T, Task<bool>>> filters)
-        {
-            if (item == null)
-            {
-                return false;
-            }
-
-            foreach (var func in filters)
-            {
-                if (!await func(item))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        internal async Task<bool> ShouldInclude<T>(T item)
+        internal async Task<bool> ShouldInclude(object item)
         {
             if (item == null)
             {
@@ -106,7 +63,7 @@ namespace EfFilter
                 return true;
             }
 
-            foreach (var func in FindFilters<T>())
+            foreach (var func in FindFilters(item.GetType()))
             {
                 if (!await func(item))
                 {
@@ -117,9 +74,8 @@ namespace EfFilter
             return true;
         }
 
-        IEnumerable<Func<T, Task<bool>>> FindFilters<T>()
+        IEnumerable<Func<object, Task<bool>>> FindFilters(Type type)
         {
-            var type = typeof(T);
             foreach (var pair in funcs.Where(x => x.Key.IsAssignableFrom(type)))
             {
                 yield return item => pair.Value(item);

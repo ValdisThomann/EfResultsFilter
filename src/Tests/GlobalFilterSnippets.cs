@@ -19,7 +19,7 @@ public class GlobalFilterSnippets
     {
         #region add-filter
 
-        var filters = new GlobalFilters();
+        var filters = new Filters();
         filters.Add<MyEntity>(item => item.Property != "Ignore");
 
         var items = await myDbContext.MyEntities.ToListAsync();

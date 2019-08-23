@@ -9,10 +9,10 @@ public class GlobalFiltersTests :
     [Fact]
     public async Task Simple()
     {
-        var filters= new GlobalFilters();
+        var filters= new Filters();
         filters.Add<Target>(target => target.Property != "Ignore");
         Assert.True(await filters.ShouldInclude(new Target()));
-        Assert.False(await filters.ShouldInclude<object>(null));
+        Assert.False(await filters.ShouldInclude(null));
         Assert.True(await filters.ShouldInclude(new Target {Property = "Include"}));
         Assert.False(await filters.ShouldInclude(new Target {Property = "Ignore"}));
 

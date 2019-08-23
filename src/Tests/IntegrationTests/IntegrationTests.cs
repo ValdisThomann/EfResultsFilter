@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using EfFilter;
 using EfLocalDb;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +22,11 @@ public class IntegrationTests :
         select Property
         from ParentEntities");
             },
-            constructInstance: builder => new EfFilterDbContext(builder.Options));
+            constructInstance: builder =>
+            {
+                builder.AddFilters();
+                return new EfFilterDbContext(builder.Options);
+            });
     }
 
     public IntegrationTests(ITestOutputHelper output) :
@@ -30,7 +35,29 @@ public class IntegrationTests :
     }
 
     [Fact]
+    public async Task Sync()
+    {
+        using (var database = await BuildContext())
+        using (database.Context.StartFilteredQuery(BuildFilters()))
+        {
+            var result = database.Context.ParentEntities.Include(x => x.Children).ToList();
+            ObjectApprover.Verify(result);
+        }
+    }
+
+    [Fact]
     public async Task Async()
+    {
+        using (var database = await BuildContext())
+        using (database.Context.StartFilteredQuery(BuildFilters()))
+        {
+            var result = await database.Context.ParentEntities.Include(x => x.Children).ToListAsync();
+            ObjectApprover.Verify(result);
+        }
+    }
+
+    [Fact]
+    public async Task<SqlDatabase<EfFilterDbContext>> BuildContext()
     {
         var parent1 = new ParentEntity
         {
@@ -58,17 +85,14 @@ public class IntegrationTests :
         parent1.Children.Add(child1);
         parent1.Children.Add(child2);
         parent2.Children.Add(child3);
-        using (var database = await sqlInstance.Build())
-        {
-            await database.AddDataUntracked(parent1, parent2);
-            var result = await database.Context.ParentEntities.Include(x=>x.Children).ToListAsync();
-            ObjectApprover.Verify(result);
-        }
+        var database = await sqlInstance.Build();
+        await database.AddDataUntracked(parent1, parent2);
+        return database;
     }
 
-    static GlobalFilters BuildFilters()
+    static Filters BuildFilters()
     {
-        var filters = new GlobalFilters();
+        var filters = new Filters();
         filters.Add<ParentEntity>(item => item.Property != "Ignore");
         filters.Add<ChildEntity>(item => item.Property != "Ignore");
         return filters;

@@ -30,13 +30,13 @@ https://nuget.org/packages/EfFilter/
 <!-- snippet: GlobalFiltersSignature -->
 <a id='snippet-globalfilterssignature'/></a>
 ```cs
-public class GlobalFilters
+public class Filters
 {
     public delegate bool Filter<in T>(T input);
 
     public delegate Task<bool> AsyncFilter<in T>(T input);
 ```
-<sup>[snippet source](/src/EfFilter/GlobalFilters.cs#L8-L16) / [anchor](#snippet-globalfilterssignature)</sup>
+<sup>[snippet source](/src/EfFilter/Filters.cs#L8-L16) / [anchor](#snippet-globalfilterssignature)</sup>
 <!-- endsnippet -->
 
 
@@ -50,17 +50,16 @@ public class MyEntity
     public string Property { get; set; }
 }
 ```
-<sup>[snippet source](/src/Tests/GlobalFilterSnippets.cs#L8-L15) / [anchor](#snippet-add-filter)</sup>
+<sup>[snippet source](/src/Tests/GlobalFilterSnippets.cs#L9-L16) / [anchor](#snippet-add-filter)</sup>
 <a id='snippet-add-filter-1'/></a>
 ```cs
-var filters = new GlobalFilters();
+var filters = new Filters();
 filters.Add<MyEntity>(item => item.Property != "Ignore");
 
 var items = await myDbContext.MyEntities.ToListAsync();
 ```
-<sup>[snippet source](/src/Tests/GlobalFilterSnippets.cs#L19-L26) / [anchor](#snippet-add-filter-1)</sup>
+<sup>[snippet source](/src/Tests/GlobalFilterSnippets.cs#L20-L27) / [anchor](#snippet-add-filter-1)</sup>
 <!-- endsnippet -->
-
 
 
 ## Icon
