@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.Internal;
@@ -52,9 +54,52 @@ namespace EfFilter
 
     public class CustomAsyncEnumerable<T> : IAsyncEnumerable<T>
     {
-        public CustomAsyncEnumerable(IAsyncEnumerable<object> asyncEnumerable)
-        {
+        IAsyncEnumerable<T> asyncEnumerable;
 
+        public CustomAsyncEnumerable(IAsyncEnumerable<T> asyncEnumerable)
+        {
+            this.asyncEnumerable = asyncEnumerable;
         }
+
+        public IAsyncEnumerator<T> GetEnumerator()
+        {
+            return new CustomAsyncEnumerator<T>(asyncEnumerable.GetEnumerator());
+        }
+    }
+
+    public class CustomAsyncEnumerator<T>:IAsyncEnumerator<T>
+    {
+        IAsyncEnumerator<T> inner;
+
+        public CustomAsyncEnumerator(IAsyncEnumerator<T> inner)
+        {
+            this.inner = inner;
+        }
+
+        public void Dispose()
+        {
+            inner.Dispose();
+        }
+
+        public async Task<bool> MoveNext(CancellationToken cancellationToken)
+        {
+            while (true)
+            {
+                var moveNext = await inner.MoveNext(cancellationToken);
+                if (!moveNext)
+                {
+                    break;
+                }
+
+                if (Current != null)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public T Current => inner.Current;
     }
 }
