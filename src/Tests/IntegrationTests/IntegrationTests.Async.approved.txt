@@ -1,1 +1,13 @@
-﻿ 
+﻿[
+  {
+    Id: Guid_1,
+    Property: 'Value1',
+    Children: [
+      {
+        Id: Guid_2,
+        Property: 'Value2'
+      }
+    ]
+  },
+  null
+]
