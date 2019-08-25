@@ -52,7 +52,17 @@ class CustomQueryBuffer :
             joinPredicate);
     }
 
-    public override Task IncludeCollectionAsync<TEntity, TRelated, TElement>(int includeId, INavigation navigation, INavigation inverseNavigation, IEntityType targetEntityType, IClrCollectionAccessor clrCollectionAccessor, IClrPropertySetter inverseClrPropertySetter, bool tracking, TEntity entity, Func<IAsyncEnumerable<TRelated>> relatedEntitiesFactory, Func<TEntity, TRelated, bool> joinPredicate, CancellationToken cancellationToken)
+    public override Task IncludeCollectionAsync<TEntity, TRelated, TElement>(
+        int includeId, INavigation navigation,
+        INavigation inverseNavigation,
+        IEntityType targetEntityType,
+        IClrCollectionAccessor clrCollectionAccessor,
+        IClrPropertySetter inverseClrPropertySetter,
+        bool tracking,
+        TEntity entity,
+        Func<IAsyncEnumerable<TRelated>> relatedEntitiesFactory,
+        Func<TEntity, TRelated, bool> joinPredicate,
+        CancellationToken cancellation)
     {
         return base.IncludeCollectionAsync<TEntity, TRelated, TElement>(
             includeId,
@@ -69,6 +79,6 @@ class CustomQueryBuffer :
                 return entitiesFactory.Where(x => x != null);
             },
             joinPredicate,
-            cancellationToken);
+            cancellation);
     }
 }

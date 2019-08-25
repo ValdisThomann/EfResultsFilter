@@ -81,11 +81,11 @@ namespace EfFilter
             inner.Dispose();
         }
 
-        public async Task<bool> MoveNext(CancellationToken cancellationToken)
+        public async Task<bool> MoveNext(CancellationToken cancellation)
         {
             while (true)
             {
-                var moveNext = await inner.MoveNext(cancellationToken);
+                var moveNext = await inner.MoveNext(cancellation);
                 if (!moveNext)
                 {
                     break;

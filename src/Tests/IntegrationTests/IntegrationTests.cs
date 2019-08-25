@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using EfFilter;
 using EfLocalDb;
@@ -67,8 +68,8 @@ public class IntegrationTests :
     //    }
     //}
 
-    [Fact]
-    public async Task<SqlDatabase<EfFilterDbContext>> BuildContext()
+    async Task<SqlDatabase<EfFilterDbContext>> BuildContext(
+        [CallerMemberName] string memberName = null)
     {
         var parent1 = new ParentEntity
         {
@@ -96,7 +97,7 @@ public class IntegrationTests :
         parent1.Children.Add(child1);
         parent1.Children.Add(child2);
         parent2.Children.Add(child3);
-        var database = await sqlInstance.Build();
+        var database = await sqlInstance.Build(memberName);
         await database.AddDataUntracked(parent1, parent2);
         return database;
     }
