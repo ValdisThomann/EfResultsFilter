@@ -14,6 +14,7 @@ public class IntegrationTests :
 
     static IntegrationTests()
     {
+        LocalDbLogging.EnableVerbose(sqlLogging: true);
         sqlInstance = new SqlInstance<EfFilterDbContext>(
             buildTemplate: async dbContext =>
             {
@@ -47,6 +48,28 @@ public class IntegrationTests :
     }
 
     [Fact]
+    public async Task SyncSingle()
+    {
+        using (var database = await BuildContext())
+        using (database.Context.StartFilteredQuery(BuildFilters()))
+        {
+            var result = database.Context.ParentEntities.Include(x => x.Children).Single();
+            ObjectApprover.Verify(result);
+        }
+    }
+
+    [Fact]
+    public async Task AsyncSingle()
+    {
+        using (var database = await BuildContext())
+        using (database.Context.StartFilteredQuery(BuildFilters()))
+        {
+            var result = await database.Context.ParentEntities.Include(x => x.Children).SingleAsync();
+            ObjectApprover.Verify(result);
+        }
+    }
+
+    [Fact]
     public async Task Async()
     {
         using (var database = await BuildContext())
@@ -57,16 +80,30 @@ public class IntegrationTests :
         }
     }
 
-    //[Fact]
-    //public async Task Async2()
-    //{
-    //    using (var database = await BuildContext())
-    //    using (var filtered = database.Context.ParentEntities.Filtered(BuildFilters()))
-    //    {
-    //        var result = filtered.ToListAsync();
-    //        ObjectApprover.Verify(result);
-    //    }
-    //}
+    [Fact]
+    public async Task WhereBefore()
+    {
+        var parent1 = new ParentEntity
+        {
+            Property = "Value1"
+        };
+        var parent2 = new ParentEntity
+        {
+            Property = "Ignore"
+        };
+        var parent3 = new ParentEntity
+        {
+            Property = "OtherIgnore"
+        };
+        var database1 = await sqlInstance.Build();
+        await database1.AddDataUntracked(parent1, parent2, parent3);
+        using (var database = database1)
+        using (database.Context.StartFilteredQuery(BuildFilters()))
+        {
+            var result = await database.Context.ParentEntities.Where(x => x.Property != "OtherIgnore").ToListAsync();
+            ObjectApprover.Verify(result);
+        }
+    }
 
     async Task<SqlDatabase<EfFilterDbContext>> BuildContext(
         [CallerMemberName] string memberName = null)

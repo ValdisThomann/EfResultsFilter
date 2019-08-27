@@ -6,11 +6,9 @@ namespace EfFilter
         IDisposable
         where TEntity : class
     {
-
         public void Dispose()
         {
-            CustomQueryBuffer.filters.Value = null;
+            CustomModelExpressionApplyingExpressionVisitor.filters.Value = null;
         }
-
     }
 }

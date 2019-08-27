@@ -5,6 +5,6 @@ class FilterCleaner:
 {
     public void Dispose()
     {
-        CustomQueryBuffer.filters.Value = null;
+        CustomModelExpressionApplyingExpressionVisitor.filters.Value = null;
     }
 }

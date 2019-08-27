@@ -8,6 +8,5 @@
         Property: 'Value2'
       }
     ]
-  },
-  null
+  }
 ]
