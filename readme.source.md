@@ -28,4 +28,4 @@ snippet: add-filter
 
 ## Icon
 
-[Memory](https://thenounproject.com/term/database/1631008/) designed by H Alberto Gongora from [The Noun Project](https://thenounproject.com)
+[Funnel](https://thenounproject.com/icon.cheese/collection/funnel-semi/?i=2641174) designed by [icon.cheese](https://thenounproject.com/icon.cheese) from [The Noun Project](https://thenounproject.com)
