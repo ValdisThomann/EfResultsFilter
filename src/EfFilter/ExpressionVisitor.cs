@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore.Query.Internal;
 using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Parsing.ExpressionVisitors;
 
-class CustomModelExpressionApplyingExpressionVisitor :
+class ExpressionVisitor :
     ModelExpressionApplyingExpressionVisitor
 {
     QueryCompilationContext compilationContext;
@@ -26,7 +26,7 @@ class CustomModelExpressionApplyingExpressionVisitor :
     static MethodInfo whereMethod;
     static FieldInfo parameterField;
 
-    static CustomModelExpressionApplyingExpressionVisitor()
+    static ExpressionVisitor()
     {
         var modelVisitorType = typeof(ModelExpressionApplyingExpressionVisitor);
         var whereMethodField = modelVisitorType.GetField("_whereMethod", BindingFlags.Static | BindingFlags.NonPublic);
@@ -34,7 +34,7 @@ class CustomModelExpressionApplyingExpressionVisitor :
         parameterField = modelVisitorType.GetField("_parameters", BindingFlags.Instance | BindingFlags.NonPublic);
     }
 
-    public CustomModelExpressionApplyingExpressionVisitor(
+    public ExpressionVisitor(
         QueryCompilationContext compilationContext,
         IQueryModelGenerator generator,
         EntityQueryModelVisitor visitor) :
@@ -107,7 +107,7 @@ class CustomModelExpressionApplyingExpressionVisitor :
         return (LambdaExpression) lambdaMethod.Invoke(this, null);
     }
 
-    static MethodInfo buildLambdaMethod = typeof(CustomModelExpressionApplyingExpressionVisitor).GetMethod("BuildLambda");
+    static MethodInfo buildLambdaMethod = typeof(ExpressionVisitor).GetMethod("BuildLambda");
 
     static MethodInfo GetLambdaMethod(Type type)
     {

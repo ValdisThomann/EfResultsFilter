@@ -8,7 +8,7 @@ namespace EfFilter
     {
         public void Dispose()
         {
-            CustomModelExpressionApplyingExpressionVisitor.filters.Value = null;
+            ExpressionVisitor.filters.Value = null;
         }
     }
 }

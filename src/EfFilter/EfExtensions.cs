@@ -10,14 +10,14 @@ namespace EfFilter
             where TDbContext : DbContext
         {
             Guard.AgainstNull(nameof(builder), builder);
-            builder.ReplaceService<IEntityQueryModelVisitorFactory, CustomRelationalQueryModelVisitorFactory>();
+            builder.ReplaceService<IEntityQueryModelVisitorFactory, VisitorFactory>();
         }
 
         public static IDisposable StartFilteredQuery<TDbContext>(this TDbContext context, Filters filters)
             where TDbContext : DbContext
         {
             Guard.AgainstNull(nameof(context), context);
-            CustomModelExpressionApplyingExpressionVisitor.filters.Value = filters;
+            ExpressionVisitor.filters.Value = filters;
             return new FilterCleaner();
         }
     }

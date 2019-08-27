@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore.Query;
 
-class CustomRelationalQueryModelVisitorFactory :
+class VisitorFactory :
     RelationalQueryModelVisitorFactory
 {
-    public CustomRelationalQueryModelVisitorFactory(
+    public VisitorFactory(
         EntityQueryModelVisitorDependencies dependencies,
         RelationalQueryModelVisitorDependencies relationalDependencies) :
         base(dependencies, relationalDependencies)
@@ -12,7 +12,7 @@ class CustomRelationalQueryModelVisitorFactory :
 
     public override EntityQueryModelVisitor Create(QueryCompilationContext compilationContext, EntityQueryModelVisitor parentModelVisitor)
     {
-        return new CustomRelationalQueryModelVisitor(
+        return new ModelVisitor(
             Dependencies,
             RelationalDependencies,
             (RelationalQueryCompilationContext)compilationContext,
