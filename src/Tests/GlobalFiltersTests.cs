@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using EfFilter;
+using EfResultFilter;
 using Xunit;
 using Xunit.Abstractions;
 

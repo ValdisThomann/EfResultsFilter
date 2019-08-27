@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using EfFilter;
+using EfResultFilter;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 // ReSharper disable UnusedVariable

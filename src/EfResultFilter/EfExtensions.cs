@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 
-namespace EfFilter
+namespace EfResultFilter
 {
     public static class EfExtensions
     {

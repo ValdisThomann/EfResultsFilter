@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using EfFilter;
 using EfLocalDb;
+using EfResultFilter;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 using Xunit.Abstractions;

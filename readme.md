@@ -36,7 +36,7 @@ public class Filters
 
     public delegate Task<bool> AsyncFilter<in T>(T input);
 ```
-<sup>[snippet source](/src/EfFilter/Filters.cs#L8-L16) / [anchor](#snippet-globalfilterssignature)</sup>
+<sup>[snippet source](/src/EfResultFilter/Filters.cs#L8-L16) / [anchor](#snippet-globalfilterssignature)</sup>
 <!-- endsnippet -->
 
 
