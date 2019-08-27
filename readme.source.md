@@ -15,8 +15,6 @@ https://nuget.org/packages/EfResultsFilter/
  * When evaluated on nodes of a collection, excluded nodes will be removed from collection.
  * When evaluated on a property node, the value will be replaced with null.
  * A [Type.IsAssignableFrom](https://docs.microsoft.com/en-us/dotnet/api/system.type.isassignablefrom) check will be performed to determine if an item instance should be filtered based on the `<TItem>`.
- * Filters are static and hence shared for the current [AppDomain](https://docs.microsoft.com/en-us/dotnet/api/system.appdomain).
-
 
 ### Signature:
 

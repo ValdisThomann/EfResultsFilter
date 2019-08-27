@@ -13,7 +13,7 @@ namespace EfResultFilter
             builder.ReplaceService<IEntityQueryModelVisitorFactory, VisitorFactory>();
         }
 
-        public static IDisposable StartFilteredQuery<TDbContext>(this TDbContext context, Filters filters)
+        public static IDisposable FilterResults<TDbContext>(this TDbContext context, Filters filters)
             where TDbContext : DbContext
         {
             Guard.AgainstNull(nameof(context), context);

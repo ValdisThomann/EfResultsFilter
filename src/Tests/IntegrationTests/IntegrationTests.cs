@@ -40,7 +40,7 @@ public class IntegrationTests :
     public async Task Sync()
     {
         using (var database = await BuildContext())
-        using (database.Context.StartFilteredQuery(BuildFilters()))
+        using (database.Context.FilterResults(BuildFilters()))
         {
             var result = database.Context.ParentEntities.Include(x => x.Children).ToList();
             ObjectApprover.Verify(result);
@@ -51,7 +51,7 @@ public class IntegrationTests :
     public async Task SyncSingle()
     {
         using (var database = await BuildContext())
-        using (database.Context.StartFilteredQuery(BuildFilters()))
+        using (database.Context.FilterResults(BuildFilters()))
         {
             var result = database.Context.ParentEntities.Include(x => x.Children).Single();
             ObjectApprover.Verify(result);
@@ -62,7 +62,7 @@ public class IntegrationTests :
     public async Task AsyncSingle()
     {
         using (var database = await BuildContext())
-        using (database.Context.StartFilteredQuery(BuildFilters()))
+        using (database.Context.FilterResults(BuildFilters()))
         {
             var result = await database.Context.ParentEntities.Include(x => x.Children).SingleAsync();
             ObjectApprover.Verify(result);
@@ -73,7 +73,7 @@ public class IntegrationTests :
     public async Task Async()
     {
         using (var database = await BuildContext())
-        using (database.Context.StartFilteredQuery(BuildFilters()))
+        using (database.Context.FilterResults(BuildFilters()))
         {
             var result = await database.Context.ParentEntities.Include(x => x.Children).ToListAsync();
             ObjectApprover.Verify(result);
@@ -98,7 +98,7 @@ public class IntegrationTests :
         var database1 = await sqlInstance.Build();
         await database1.AddDataUntracked(parent1, parent2, parent3);
         using (var database = database1)
-        using (database.Context.StartFilteredQuery(BuildFilters()))
+        using (database.Context.FilterResults(BuildFilters()))
         {
             var result = await database.Context.ParentEntities.Where(x => x.Property != "OtherIgnore").ToListAsync();
             ObjectApprover.Verify(result);

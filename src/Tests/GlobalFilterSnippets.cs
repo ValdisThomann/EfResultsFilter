@@ -21,8 +21,10 @@ public class GlobalFilterSnippets
 
         var filters = new Filters();
         filters.Add<MyEntity>(item => item.Property != "Ignore");
-
-        var items = await myDbContext.MyEntities.ToListAsync();
+        using (myDbContext.FilterResults(filters))
+        {
+            var items = await myDbContext.MyEntities.ToListAsync();
+        }
 
         #endregion
     }
