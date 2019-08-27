@@ -10,12 +10,12 @@ class ModelVisitor :
     public ModelVisitor(
         EntityQueryModelVisitorDependencies dependencies,
         RelationalQueryModelVisitorDependencies relationalDependencies,
-        RelationalQueryCompilationContext compilationContext,
-        RelationalQueryModelVisitor modelVisitor) :
-        base(dependencies, relationalDependencies, compilationContext, modelVisitor)
+        RelationalQueryCompilationContext context,
+        RelationalQueryModelVisitor visitor) :
+        base(dependencies, relationalDependencies, context, visitor)
     {
         var expressionVisitor = new ExpressionVisitor(
-            compilationContext,
+            context,
             dependencies.QueryModelGenerator,
             this);
         field.SetValue(this, expressionVisitor);
