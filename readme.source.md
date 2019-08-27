@@ -1,13 +1,13 @@
-# <img src="/src/icon.png" height="40px"> EfFilter
+# <img src="/src/icon.png" height="40px"> EfResultsFilter
 
 Sometimes, in the context of constructing an EF query, it is not possible to know if any given item should be returned in the results. For example when performing authorization where the rules rules are pulled from a different system, and that information does not exist in the database.
 
 This project allows a custom function to be executed after the EF query execution and determine if any given node should be included in the result.
 
 
-## NuGet [![NuGet Status](http://img.shields.io/nuget/v/EfFilter.svg?longCache=true&style=flat)](https://www.nuget.org/packages/EfFilter/)
+## NuGet [![NuGet Status](http://img.shields.io/nuget/v/EfResultsFilter.svg?longCache=true&style=flat)](https://www.nuget.org/packages/EfResultsFilter/)
 
-https://nuget.org/packages/EfFilter/
+https://nuget.org/packages/EfResultsFilter/
 
 
 ## Notes:
