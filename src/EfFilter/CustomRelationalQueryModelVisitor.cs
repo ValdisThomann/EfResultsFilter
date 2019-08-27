@@ -1,9 +1,12 @@
 ﻿using System.Reflection;
 using Microsoft.EntityFrameworkCore.Query;
 
-public class CustomRelationalQueryModelVisitor :
+class CustomRelationalQueryModelVisitor :
     RelationalQueryModelVisitor
 {
+    static FieldInfo field = typeof(EntityQueryModelVisitor)
+        .GetField("_modelExpressionApplyingExpressionVisitor", BindingFlags.Instance | BindingFlags.NonPublic);
+
     public CustomRelationalQueryModelVisitor(
         EntityQueryModelVisitorDependencies dependencies,
         RelationalQueryModelVisitorDependencies relationalDependencies,
@@ -11,7 +14,6 @@ public class CustomRelationalQueryModelVisitor :
         RelationalQueryModelVisitor modelVisitor) :
         base(dependencies, relationalDependencies, compilationContext, modelVisitor)
     {
-        var field = typeof(EntityQueryModelVisitor).GetField("_modelExpressionApplyingExpressionVisitor", BindingFlags.Instance | BindingFlags.NonPublic);
         var expressionVisitor = new CustomModelExpressionApplyingExpressionVisitor(
             compilationContext,
             dependencies.QueryModelGenerator,

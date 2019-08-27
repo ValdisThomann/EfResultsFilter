@@ -10,12 +10,12 @@ class CustomRelationalQueryModelVisitorFactory :
     {
     }
 
-    public override EntityQueryModelVisitor Create(QueryCompilationContext queryCompilationContext, EntityQueryModelVisitor parentEntityQueryModelVisitor)
+    public override EntityQueryModelVisitor Create(QueryCompilationContext compilationContext, EntityQueryModelVisitor parentModelVisitor)
     {
         return new CustomRelationalQueryModelVisitor(
             Dependencies,
             RelationalDependencies,
-            (RelationalQueryCompilationContext)queryCompilationContext,
-            (RelationalQueryModelVisitor)parentEntityQueryModelVisitor);
+            (RelationalQueryCompilationContext)compilationContext,
+            (RelationalQueryModelVisitor)parentModelVisitor);
     }
 }

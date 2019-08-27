@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore.Query.Internal;
 using Remotion.Linq.Clauses.Expressions;
 using Remotion.Linq.Parsing.ExpressionVisitors;
 
-public class CustomModelExpressionApplyingExpressionVisitor :
+class CustomModelExpressionApplyingExpressionVisitor :
     ModelExpressionApplyingExpressionVisitor
 {
     QueryCompilationContext compilationContext;
