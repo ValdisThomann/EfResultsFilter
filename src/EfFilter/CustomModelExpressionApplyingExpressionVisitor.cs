@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -18,6 +19,7 @@ public class CustomModelExpressionApplyingExpressionVisitor :
     QueryCompilationContext compilationContext;
     IQueryModelGenerator generator;
     internal static AsyncLocal<Filters> filters = new AsyncLocal<Filters>();
+    static ConcurrentDictionary<Type, MethodInfo> lambdaMethodCache = new ConcurrentDictionary<Type, MethodInfo>();
     IParameterValues parameters;
 
     Filters instanceFilters;
@@ -26,9 +28,10 @@ public class CustomModelExpressionApplyingExpressionVisitor :
 
     static CustomModelExpressionApplyingExpressionVisitor()
     {
-        var whereMethodField = typeof(ModelExpressionApplyingExpressionVisitor).GetField("_whereMethod", BindingFlags.Static | BindingFlags.NonPublic);
+        var modelVisitorType = typeof(ModelExpressionApplyingExpressionVisitor);
+        var whereMethodField = modelVisitorType.GetField("_whereMethod", BindingFlags.Static | BindingFlags.NonPublic);
         whereMethod = (MethodInfo) whereMethodField.GetValue(null);
-        parameterField = typeof(ModelExpressionApplyingExpressionVisitor).GetField("_parameters", BindingFlags.Instance | BindingFlags.NonPublic);
+        parameterField = modelVisitorType.GetField("_parameters", BindingFlags.Instance | BindingFlags.NonPublic);
     }
 
     public CustomModelExpressionApplyingExpressionVisitor(
@@ -51,7 +54,8 @@ public class CustomModelExpressionApplyingExpressionVisitor :
         {
             return expression;
         }
-        var type = ((IQueryable)constantExpression.Value).ElementType;
+
+        var type = ((IQueryable) constantExpression.Value).ElementType;
         var entityType = compilationContext.Model.FindEntityType(type)?.RootType();
 
         if (entityType == null)
@@ -59,16 +63,14 @@ public class CustomModelExpressionApplyingExpressionVisitor :
             return expression;
         }
 
-        if(instanceFilters == null)
+        if (instanceFilters == null)
         {
             return expression;
         }
 
-        var lambdaMethod = GetType().GetMethod("BuildLambda");
-        lambdaMethod = lambdaMethod.MakeGenericMethod(type);
-        var lambda = (LambdaExpression)lambdaMethod.Invoke(this,null);
+        var lambda = BuildLambda(type);
         var parameterizedFilter
-            = (LambdaExpression)generator
+            = (LambdaExpression) generator
                 .ExtractParameters(
                     compilationContext.Logger,
                     lambda,
@@ -97,6 +99,21 @@ public class CustomModelExpressionApplyingExpressionVisitor :
         var subQueryModel = generator.ParseQuery(whereExpression);
 
         return new SubQueryExpression(subQueryModel);
+    }
+
+    LambdaExpression BuildLambda(Type type)
+    {
+        var lambdaMethod = GetLambdaMethod(type);
+        return (LambdaExpression) lambdaMethod.Invoke(this, null);
+    }
+
+    static MethodInfo GetLambdaMethod(Type type)
+    {
+        return lambdaMethodCache.GetOrAdd(type, type1 =>
+        {
+            var method = typeof(CustomModelExpressionApplyingExpressionVisitor).GetMethod("BuildLambda");
+            return method.MakeGenericMethod(type);
+        });
     }
 
     public LambdaExpression BuildLambda<T>()
