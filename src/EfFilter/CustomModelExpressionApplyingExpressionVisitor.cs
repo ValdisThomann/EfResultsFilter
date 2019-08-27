@@ -50,6 +50,11 @@ public class CustomModelExpressionApplyingExpressionVisitor :
     {
         var expression = base.VisitConstant(constantExpression);
 
+        if (instanceFilters == null)
+        {
+            return expression;
+        }
+
         if (!constantExpression.IsEntityQueryable())
         {
             return expression;
@@ -59,11 +64,6 @@ public class CustomModelExpressionApplyingExpressionVisitor :
         var entityType = compilationContext.Model.FindEntityType(type)?.RootType();
 
         if (entityType == null)
-        {
-            return expression;
-        }
-
-        if (instanceFilters == null)
         {
             return expression;
         }
@@ -107,18 +107,16 @@ public class CustomModelExpressionApplyingExpressionVisitor :
         return (LambdaExpression) lambdaMethod.Invoke(this, null);
     }
 
+    static MethodInfo buildLambdaMethod = typeof(CustomModelExpressionApplyingExpressionVisitor).GetMethod("BuildLambda");
+
     static MethodInfo GetLambdaMethod(Type type)
     {
-        return lambdaMethodCache.GetOrAdd(type, type1 =>
-        {
-            var method = typeof(CustomModelExpressionApplyingExpressionVisitor).GetMethod("BuildLambda");
-            return method.MakeGenericMethod(type);
-        });
+        return lambdaMethodCache.GetOrAdd(type, _ => buildLambdaMethod.MakeGenericMethod(type));
     }
 
     public LambdaExpression BuildLambda<T>()
     {
-        Expression<Func<T, bool>> shouldInclude = x => instanceFilters.ShouldInclude(x).GetAwaiter().GetResult();
-        return shouldInclude;
+        Expression<Func<T, bool>> lambda = x => instanceFilters.ShouldInclude(x).GetAwaiter().GetResult();
+        return lambda;
     }
 }
